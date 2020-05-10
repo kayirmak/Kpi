@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/jquery-3.5.0.min.js"></script>
+    <script src="./js/main.js"></script>
+    
+</head>
+<body>
+
+    <div class="kpi">KPI</div>
+
+    <div class="back-form">
+        <button class="close-modal__view">X</button>
+        <div class="form">
+            
+            <input type="text" name="jk" class="name" placeholder="Name">
+            <input type="text" class="last-name" placeholder="Last Name">
+            <input type="text" class="age" placeholder="Age">
+            <input type="email" class="email" placeholder="Email">
+            <input type="tel" class="phone" placeholder="Phone Number">
+            <input type="url" class="photo" placeholder="Link on the photo">
+            <button class="btn-form">Add</button>
+            <button class="btn-form__change" style="display: none;">Change</button>
+            <div class="kpi">
+                <input type="text" class="late" placeholder="Late">
+                <input type="text" class="tasks" placeholder="Tasks">
+                <input type="text" class="interview" placeholder="Interview">
+                <input type="text" class="bonus" placeholder="Bonus">
+            </div>
+            
+        </div>
+    </div>
+    
+    <table class="students-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Last Name</th>
+                <th>Age</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Photo</th>
+            </tr>
+        </thead>
+        <tbody class="students-tbody">
+        </tbody>
+    </table>
+    <button class="btn-add">+</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Late %</th>
+                <th>Late Score</th>
+                <th>Tasks %</th>
+                <th>Tasks Score</th>
+                <th>Interview %</th>
+                <th>Interview Score</th>
+                <th>Extra Bonus</th>
+                <th>Total Score</th>
+            </tr>
+        </thead>
+        <tbody class="kpi-tbody">
+        </tbody>
+    </table>
+    
+
+    <!-- <div class="back-form__kpi">
+        <div class="kpi-modal">
+            <input type="text" class="late">
+            <input type="text" class="tasks">
+            <input type="text" class="interview">
+            <input type="text" class="bonus">
+        </div>
+    </div>
+    <button class="btn-add__kpi">+</button> -->
+
+
+    <div class="back-modal__view">
+        <button class="close-modal__view">X</button>
+        <div class="modal-view">
+        </div>
+    </div>
+
+
+    
+    
+
+</body>
+</html>

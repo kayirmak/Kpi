@@ -1,5 +1,7 @@
 $(document).ready(() => {
 
+    $('.kpi-table').hide()
+
     $('.btn-add').on('click', () => {
         $('.back-form').show()
         $('.form').fadeIn(300)
@@ -8,7 +10,11 @@ $(document).ready(() => {
         $('input').val('')
     })
 
-// Добавление студента
+
+  
+    
+    
+    // Добавление студента
     $('.btn-form').on('click', () => {
         let inpName = $('.name')
         let inpLastName = $('.last-name')
@@ -16,69 +22,42 @@ $(document).ready(() => {
         let inpEmail = $('.email')
         let inpPhone = $('.phone')
         let inpPhoto = $('.photo')
-
-        let late = Number($('.late').val())
+        
+        let late = $('.late').val()
         let tasks = $('.tasks').val()
         let interview = $('.interview').val()
-        let bonus = Number($('.bonus').val())
-
+        let bonus = ($('.bonus').val())
         
         if(!inpName.val() || !inpLastName.val() || !inpAge.val() || !inpEmail.val() || !inpPhone.val() || !inpPhoto.val()){
-            alert('Заполните все поля')
+            alert('Заполните все данные студента')
             return
         }
-
+        
+        
+        
         const inpObj = {
             name: inpName.val(),
             lastName: inpLastName.val(),
             age: inpAge.val(),
             email: inpEmail.val(),
             phone: inpPhone.val(),
-            photo: inpPhoto.val()
-        }
-
-        const kpiObj = {
-            name: inpName.val(),
+            photo: inpPhoto.val(),
+            
+            
             late: late,
-            lateScore: late / 10,
+            lateScore: (late / 10).toFixed(),
             tasks: tasks,
-            tasksScore: tasks / 2.4,
+            tasksScore: (tasks / 2.4).toFixed(2),
             interview: interview,
-            interviewScore: interview / 2.5,
+            interviewScore: (interview / 2.5).toFixed(),
             bonus: bonus,
-            totalScore: (late / 10) + (tasks / 2.4) + (interview / 2.5) + bonus
+            totalScore: Math.round((late / 10) + (tasks / 2.4) + (interview / 2.5) + (bonus / 1)).toFixed()
         }
-        console.log(kpiObj)
         
-        $('.students-tbody').append(`
-            <tr>
-                <td>${inpObj.name}</td>
-                <td>${inpObj.lastName}</td>
-                <td>${inpObj.age}</td>
-                <td>${inpObj.email}</td>
-                <td>${inpObj.phone}</td>
-                <td>${inpObj.photo}</td>
-            </tr>
-        `)
-
-        $('.kpi-tbody').append(`
-            <tr>
-                <td>${kpiObj.name}</td>
-                <td>${kpiObj.late}</td>
-                <td>${kpiObj.lateScore}</td>
-                <td>${kpiObj.tasks}</td>
-                <td>${kpiObj.tasksScore}</td>
-                <td>${kpiObj.interview}</td>
-                <td>${kpiObj.interviewScore}</td>
-                <td>${kpiObj.bonus}</td>
-                <td>${kpiObj.totalScore}</td>
-            </tr>
-        `)
-
-
+        
         $('input').val('')
         
-        setItemToStorage(inpObj, kpiObj)
+        setItemToStorage(inpObj)
         renderData()
         $('.back-form').hide()
         $('.form').hide()
@@ -87,22 +66,13 @@ $(document).ready(() => {
     
     
 // Функция обновления данных в localStorage
-    const setItemToStorage = (inpObj, kpiObj) => {
+    const setItemToStorage = (inpObj) => {
         if(!localStorage.getItem('data')){
             localStorage.setItem('data', '[]');
         }
-
-        if(!localStorage.getItem('data-kpi')){
-            localStorage.setItem('data-kpi', '[]');
-        }
-
-        const storageKpiData = JSON.parse(localStorage.getItem('data-kpi'));
-        storageKpiData.push(kpiObj);
-
+    
         const storageTasksData = JSON.parse(localStorage.getItem('data'));
         storageTasksData.push(inpObj);
-
-        localStorage.setItem('data-kpi', JSON.stringify(storageKpiData));
 
         localStorage.setItem('data', JSON.stringify(storageTasksData));
     
@@ -113,15 +83,14 @@ $(document).ready(() => {
 //Функция отображения на экране
     const renderData = () => {
         let data = JSON.parse(localStorage.getItem('data'));
-        let dataKpi = JSON.parse(localStorage.getItem('data-kpi'));
-
+        
        
-        if(!data || !dataKpi) return;
+        if(!data) return;
 
         $('.students-tbody').html('');
         $('.kpi-tbody').html('');
 
-        dataKpi.forEach(item => {
+        data.forEach((item, i) => {
             $('.kpi-tbody').append(`
                 <tr>
                     <td>${item.name}</td>
@@ -135,27 +104,38 @@ $(document).ready(() => {
                     <td>${item.totalScore}</td>
                 </tr>
             `);
+            
+            
         })
 
-        data.forEach(item => {
+
+        data.forEach((item, i) => {
+            
+           //if(i >= 2) return
+           
             $('.students-tbody').append(`
-                <tr>
+                <tr class = "${i}">
                     <td>${item.name}</td>
                     <td>${item.lastName}</td>
                     <td>${item.age}</td>
                     <td>${item.email}</td>
                     <td>${item.phone}</td>
-                    <td><img src = ${item.photo} width = 100px></td>
-                    <td><button class = 'btn-view'><i class="fas fa-info"></i></button></td>
+                    <td class = 'img-td' width = 100px height = 100px style = "background: url(${item.photo})"></td>
+                    <td><button class = 'btn-view ${i}'><i class="fas fa-info"></i></button></td>
                     <td><button class = 'btn-change'><i class="fas fa-pencil-alt"></i></button></td>
                     <td><button class = 'btn-delete'><i class="fas fa-trash-alt"></i></button></td>
                 </tr>
             `)
+            
+            $('.img-td').css('background-size', `cover`)
         });
+        
     }
 // /Функция отображения на экране
 
+
     renderData()
+ 
 
 //Удаление студента
     $('body').on('click','.btn-delete', function(){
@@ -172,12 +152,16 @@ $(document).ready(() => {
 // /Удаление студента
 
 // Просмотр студента
-    $('body').on('click','.btn-view', function(){
+    $('body').on('click',`.btn-view`, function(e){
         let data = JSON.parse(localStorage.getItem('data'));
         let index = $(this).parent().parent().index();
+       //console.log(e.target.className)
 
-        
+    
+
         data.forEach((item, i) => {
+            console.log(item.id)
+            //if(e.target.className != (`btn-view ${item.id}`)) return
             if(index != i) return
             $('.modal-view').append(`
                 <p class = "img-back"></p>
@@ -210,7 +194,6 @@ $('.close-modal__view').click(() => {
 // Изменение студента
     $('body').on('click','.btn-change', function(){
         let data = JSON.parse(localStorage.getItem('data'));
-        let dataKpi = JSON.parse(localStorage.getItem('data-kpi'));
 
 
         let index = $(this).parent().parent().index();
@@ -229,22 +212,14 @@ $('.close-modal__view').click(() => {
             $('.email').val(item.email)
             $('.phone').val(item.phone)
             $('.photo').val(item.photo)
-        })
-
-        dataKpi.forEach((item, i) => {
-            if(index != i) return
 
             $('.late').val(item.late)
             $('.tasks').val(item.tasks)
             $('.interview').val(item.interview)
             $('.bonus').val(item.bonus)
-            
         })
 
-
         
-
-
         $('.btn-form__change').on('click', function(){
             
                 data.splice(index, 1,
@@ -255,26 +230,22 @@ $('.close-modal__view').click(() => {
                         email: $('.email').val(),
                         phone: $('.phone').val(),
                         photo: $('.photo').val(),
+                        late: $('.late').val(),
+                        lateScore: ($('.late').val() / 10).toFixed(),
+                        tasks: $('.tasks').val(),
+                        tasksScore: ($('.tasks').val() / 2.4).toFixed(2),
+                        interview: $('.interview').val(),
+                        interviewScore: ($('.interview').val() / 2.5).toFixed(),
+                        bonus: $('.bonus').val(),
+                        totalScore: Math.round(($('.late').val() / 10) + ($('.tasks').val() / 2.4) + ($('.interview').val() / 2.5) + ($('.bonus').val() / 1)).toFixed()
                         
                     }
                 )
-
-                dataKpi.splice(index, 1,
-                    {
-                        late: $('.late').val(),
-                        tasks: $('.tasks').val(),
-                        interview: $('.interview').val(),
-                        bonus: $('.bonus').val()
-                    }
-                )
-
-                
-                
            
             $('.back-form').hide()
             $('.form').hide()
 
-            localStorage.setItem('data-kpi', JSON.stringify(dataKpi));
+            
             localStorage.setItem('data', JSON.stringify(data));
             
             renderData()
@@ -285,17 +256,125 @@ $('.close-modal__view').click(() => {
 
 
 
+    $('.kpi-link').on('click', () => {
+        $('.students-table').hide()
+        $('.btn-add').hide()
+        $('.kpi-table').fadeIn()
+        $('body').css('overflow-y', 'scroll')
+        $('.kpi-link').css({'background': 'rgb(138, 58, 58)', 'color': '#fff'})
+        $('.students-link').css({'background': '#fff', 'color': 'rgb(138, 58, 58)'})
+        
+    })
+
+    $('.students-link').on('click', () => {
+        $('.kpi-table').hide()
+        $('.students-table').fadeIn(300)
+        $('.btn-add').fadeIn(300)
+        $('.students-link').css({'background': 'rgb(138, 58, 58)', 'color': '#fff'})
+        $('.kpi-link').css({'background': '#fff', 'color': 'rgb(138, 58, 58)'})
+    })
 
 
-$('.kpi').on('click', function() {
-    // $('.students-table').fadeOut(300)
-    // $('.btn-add').fadeOut(300)
-
-    
 
 
-})
+    $('.search').on('keyup', function(){
+        let data = JSON.parse(localStorage.getItem('data'));
+        $('.students-tbody').html('')
+        let value = $(this).val().toLowerCase()
+        data.filter(item => {
+            if(item.name.toLowerCase().includes(value) || item.lastName.toLowerCase().includes(value)){
+                $('.students-tbody').append(`
+                <tr>
+                    <td>${item.name}</td>
+                    <td>${item.lastName}</td>
+                    <td>${item.age}</td>
+                    <td>${item.email}</td>
+                    <td>${item.phone}</td>
+                    <td class = 'img-td' width = 100px height = 100px style = "background: url(${item.photo})"></td>
+                    <td><button class = 'btn-view'><i class="fas fa-info"></i></button></td>
+                    <td><button class = 'btn-change'><i class="fas fa-pencil-alt"></i></button></td>
+                    <td><button class = 'btn-delete'><i class="fas fa-trash-alt"></i></button></td>
+                </tr>
+                `)
+                $('.img-td').css('background-size', `cover`)
+
+            }
+        })
+
+    })
 
 
 
+
+    let l = 2
+    // $('.next').click(() => {
+
+    //     let data = JSON.parse(localStorage.getItem('data'));
+
+       
+    //     if(!data || l > data.length) return;
+        
+
+    //     $('.students-tbody').html('');
+        
+
+    //     data.forEach((item, i) => {
+    //         if(i < l || i >= l+2) return
+    //         $('.students-tbody').append(`
+    //         <tr>
+    //             <td>${item.name}</td>
+    //             <td>${item.lastName}</td>
+    //             <td>${item.age}</td>
+    //             <td>${item.email}</td>
+    //             <td>${item.phone}</td>
+    //             <td class = 'img-td' width = 100px height = 100px style = "background: url(${item.photo})"></td>
+    //             <td><button class = 'btn-view ${i}'><i class="fas fa-info"></i></button></td>
+    //             <td><button class = 'btn-change'><i class="fas fa-pencil-alt"></i></button></td>
+    //             <td><button class = 'btn-delete'><i class="fas fa-trash-alt"></i></button></td>
+    //         </tr>
+    //         `)
+    //         $('.img-td').css('background-size', `cover`)
+    //     });
+    //     l = l + 2
+        
+
+        
+        
+    // })
+
+
+    // $('.prev').click(() => {
+
+    //     let data = JSON.parse(localStorage.getItem('data'));
+
+       
+    //     if(!data || l <= 2) return;
+        
+
+    //     $('.students-tbody').html('');
+        
+    //     l = l - 2
+    //     data.forEach((item, i) => {
+            
+    //         if(i < l-2 || i >= l) return
+    //         $('.students-tbody').append(`
+    //         <tr>
+    //         <td>${item.name}</td>
+    //         <td>${item.lastName}</td>
+    //         <td>${item.age}</td>
+    //         <td>${item.email}</td>
+    //         <td>${item.phone}</td>
+    //         <td class = 'img-td' width = 100px height = 100px style = "background: url(${item.photo})"></td>
+    //         <td><button class = 'btn-view'><i class="fas fa-info"></i></button></td>
+    //         <td><button class = 'btn-change'><i class="fas fa-pencil-alt"></i></button></td>
+    //         <td><button class = 'btn-delete'><i class="fas fa-trash-alt"></i></button></td>
+    //         </tr>
+    //         `)
+    //         $('.img-td').css('background-size', `cover`)
+    //     });
+        
+        
+    // })
+        
+   
 })
